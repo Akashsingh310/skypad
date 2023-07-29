@@ -20,6 +20,6 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Skypad listening on port ${port}`)
 })
 
