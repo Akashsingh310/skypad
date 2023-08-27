@@ -13,13 +13,13 @@ const JWT_SECRET = "Akashisagood$boy";
 router.post('/createuser', [body('name', 'Enter a valid Name').isLength({ min: 3 }),
 body('email', 'Enter a valid Email').isEmail(),
 body('password', 'Password must be atleast 5 character').isLength({ min: 3 })], async (req, res) => {
-
+let success = false;
   //if there are error return bad request
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+    return res.status(400).json({ success: false, errors: errors.array() });
+    }
 
 
   //check weather user exist already
@@ -27,7 +27,7 @@ body('password', 'Password must be atleast 5 character').isLength({ min: 3 })], 
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).json({ error: "sorry a user exist with this email" })
+      return res.status(400).json({  success , error: "sorry a user exist with this email" })
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -45,7 +45,8 @@ body('password', 'Password must be atleast 5 character').isLength({ min: 3 })], 
     }
     const authtoken = jwt.sign(data, JWT_SECRET)
 
-    res.json(authtoken);
+    success = true;
+    res.status(200).json({ success: success, token: authtoken });
   }
   catch (error) {
     console.error(error.message);
